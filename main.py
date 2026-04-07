@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 # from flask_wtf.csrf import CSRFProtect
-from flask_caching import Cache
+# from flask_caching import Cache
 
 from models import db, User, Post
 from forms import SignIn, SignUp, PostForm
@@ -17,8 +17,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_URI")
-app.config["CACHE_TYPE"] = "SimpleCache"
-app.config["CACHE_DEFAULT_TIMEOUT"] = 10
+# app.config["CACHE_TYPE"] = "SimpleCache"
+# app.config["CACHE_DEFAULT_TIMEOUT"] = 10
 app.secret_key = os.getenv("SECRET_KEY")
 db.init_app(app)
 login_manager = LoginManager()
@@ -26,7 +26,7 @@ login_manager.login_message = "Для доступу до сторінки сп�
 login_manager.login_view = "sign_in"
 login_manager.init_app(app)
 # csrf_protect = CSRFProtect(app)
-cache = Cache(app)
+# cache = Cache(app)
 
 
 # with app.app_context():
@@ -49,7 +49,7 @@ cache = Cache(app)
 
 
 @login_manager.user_loader
-@cache.cached(timeout=15, key_prefix="posts_")
+# @cache.cached(timeout=15, key_prefix="posts_")
 def get_current_user(id: int):
     print("Робимо запит до бази даних...")
     return User.query.filter_by(id=id).first()
