@@ -1,0 +1,28 @@
+<nav>
+    <ol>
+        <li>
+            <a href="{{ url_for('index') }}">Список статтей</a>
+        </li>
+        <li>
+            <a href="{{ url_for('sign_up') }}">Реєстрація</a>
+        </li>
+        <li>
+            <a href="{{ url_for('sign_in') }}">Вхід</a>
+        </li>
+        <li>
+            <a href="{{ url_for('logout') }}">Вихід</a>
+        </li>
+        <li>
+            <a href="{{ url_for('sign_up_form') }}">Реєстрація (Flask Form)</a>
+        </li>
+        <li>
+            <a href="{{ url_for('sign_in_form') }}">Вхід (Flask Form)</a>
+        </li>
+        <li>
+            <a href="{{ url_for('add_post') }}">Створити статтю</a>
+        </li>
+        <li>
+            <a href="{{ url_for('add_post_form') }}">Створити статтю (Flask Form)</a>
+        </li>
+    </ol>
+</nav>

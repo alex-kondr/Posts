@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    {{ form.csrf_token }}
+    {{ form.hidden_tag() }}
+
+    <div>
+        {{ form.username.label }}
+        {{ form.username }}
+    </div>
+    <div>
+        {{ form.first_name.label }}
+        {{ form.first_name }}
+    </div>
+    <div>
+        {{ form.last_name.label }}
+        {{ form.last_name }}
+    </div>
+    <div>
+        {{ form.password.label }}
+        {{ form.password }}
+    </div>
+    {{ form.submit }}
+</form>
+{% endblock content %}

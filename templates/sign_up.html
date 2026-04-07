@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post">
+    <div>
+        <label>Логін</label>
+        <input type="text" name="username" required>
+    </div>
+    <div>
+        <label>Ім'я</label>
+        <input type="text" name="first_name">
+    </div>
+    <div>
+        <label>Прізвище</label>
+        <input type="text" name="last_name">
+    </div>
+    <div>
+        <label>Пароль</label>
+        <input type="password" name="password" required>
+    </div>
+    <button type="submit">Зареєструватись</button>
+</form>
+{% endblock content %}

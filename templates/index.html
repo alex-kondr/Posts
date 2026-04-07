@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Заголовок</th>
+            <th>Стаття</th>
+            <th>Дата публікації</th>
+            <th>Автор</th>
+            <th>Фото</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.id }}</td>
+            <td>{{ post.title }}</td>
+            <td>{{ post.text }}</td>
+            <td>{{ post.created }}</td>
+            <td>{{ post.user.username }}</td>
+            {% if post.image %}
+            <td><img src="{{ url_for('static', filename=post.image) }}" alt="Фото"></td>
+            {% else %}
+            <td><img src="https://setam.net.ua/images/compat/big/2824.jpg" alt="Фото"></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
