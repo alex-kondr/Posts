@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 # from flask_wtf.csrf import CSRFProtect
-# from flask_caching import Cache
+from flask_caching import Cache
 
 from models import db, User, Post
 from forms import SignIn, SignUp, PostForm
@@ -17,16 +17,19 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_URI")
-# app.config["CACHE_TYPE"] = "SimpleCache"
-# app.config["CACHE_DEFAULT_TIMEOUT"] = 10
+app.config["CACHE_TYPE"] = "SimpleCache"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 10
 app.secret_key = os.getenv("SECRET_KEY")
+
+app.logger.setLevel("INFO")
+
 db.init_app(app)
 login_manager = LoginManager()
 login_manager.login_message = "Для доступу до сторінки спочатку увійдіть"
 login_manager.login_view = "sign_in"
 login_manager.init_app(app)
 # csrf_protect = CSRFProtect(app)
-# cache = Cache(app)
+cache = Cache(app)
 
 
 # with app.app_context():
@@ -49,9 +52,10 @@ login_manager.init_app(app)
 
 
 @login_manager.user_loader
-# @cache.cached(timeout=15, key_prefix="posts_")
+@cache.cached(timeout=15, key_prefix="posts_")
 def get_current_user(id: int):
     print("Робимо запит до бази даних...")
+    app.logger.info("Пішов запит до БД...")
     return User.query.filter_by(id=id).first()
 
 
@@ -63,6 +67,7 @@ def sign_up():
         user = User.query.filter_by(username=username).first()
         if user:
             flash(f"Користувач з логіном '{username}' вже існує")
+            app.logger.warning(f"Користувач '{username}' вже є...")
             return redirect(url_for("sign_up"))
 
         user = User(
@@ -74,7 +79,10 @@ def sign_up():
         db.session.add(user)
         db.session.commit()
         flash(f"Користувача з логіном '{username}' успішно зареєстровано")
+        app.logger.info(f"'{username}' зареєструвався")
         return redirect(url_for("sign_in"))
+
+    app.logger.info("Процес реєстрації...")
     return render_template("sign_up.html")
 
 
@@ -88,9 +96,11 @@ def sign_in():
         user: User = User.query.filter_by(username=username).first()
         if not user or not user.is_verify_password(password) or not user.is_active:
             flash("Логін або пароль невірні")
+            app.logger.error("Хтось ламає наш сервіс...")
             return redirect(url_for("sign_in"))
 
         login_user(user)
+        app.logger.info(f"Урааааа!!! Користувач '{username}' увійшов у систему")
         return redirect(url_for("index"))
     return render_template("sign_in.html")
 
@@ -99,6 +109,7 @@ def sign_in():
 @login_required
 def logout():
     flash(f"Користувач {current_user.username} успішно вийшов із системи")
+    app.logger.info(f"Користувач {current_user.username} успішно вийшов із системи")
     logout_user()
     return redirect(url_for("sign_in"))
 
